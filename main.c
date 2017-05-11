@@ -142,11 +142,9 @@ void write_png_file(char* file_name, struct Image image)
 }
 
 
-void process_file(struct Image image, struct Image image2)
+int process_file(struct Image image, struct Image image2, int startRowIndex, int endRowIndex, int startColumnIndex, int endColumnIndex)
 {
         double diff = 0;
-        double count = image.height * image.width;
-        float percentage;
 
         if (png_get_color_type(image.png_ptr, image.info_ptr) == PNG_COLOR_TYPE_RGB)
                 abort_("[process_file] input file is PNG_COLOR_TYPE_RGB but must be PNG_COLOR_TYPE_RGBA "
@@ -156,11 +154,11 @@ void process_file(struct Image image, struct Image image2)
                 abort_("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
                        PNG_COLOR_TYPE_RGBA, png_get_color_type(image.png_ptr, image.info_ptr));
 
-        for (int y=0; y<image.height; y++) {
+        for (int y=startRowIndex; y<endRowIndex; y++) {
                 png_byte* row  = image.row_pointers[y];
                 png_byte* row2 = image2.row_pointers[y];
 
-                for (int x=0; x<image.width; x++) {
+                for (int x=startColumnIndex; x<endColumnIndex; x++) {
                         png_byte* ptr  = &(row[x*4]);
                         png_byte* ptr2 = &(row2[x*4]);
                         if(ptr[0] != ptr2[0] || ptr[1] != ptr2[1] ||ptr[2] != ptr2[2] ||ptr[3] != ptr2[3]) {
@@ -178,8 +176,7 @@ void process_file(struct Image image, struct Image image2)
                 }
         }
 
-        percentage = diff/count*100;
-        printf("Diff percentage %f\n", percentage);
+        return diff;
 }
 
 
@@ -191,8 +188,12 @@ int main(int argc, char **argv)
 
         struct Image image  = read_png_file(argv[1]);
         struct Image image2 = read_png_file(argv[2]);
-        process_file(image, image2);
+        int diff = process_file(image, image2, 0, image.height, 0, image.width);
         write_png_file(argv[3], image);
+
+        double count = image.height * image.width;
+        float percentage = diff/count*100;
+        printf("Diff percentage %f\n", percentage);
 
         return 0;
 }
