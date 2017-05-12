@@ -84,6 +84,24 @@ struct Image read_png_file(char* file_name)
         return image;
 }
 
+/* float *createEmpty(int width, int height) */
+/* { */
+/* 	float *buffer = (float *) malloc(width * height * sizeof(float)); */
+/* 	if (buffer == NULL) { */
+/* 		fprintf(stderr, "Could not create image buffer\n"); */
+/* 		return NULL; */
+/* 	} */
+/* 	// Create Mandelbrot set image */
+/* 	int xPos, yPos; */
+/* 	for (yPos=0 ; yPos<height ; yPos++) */
+/* 	{ */
+/* 		for (xPos=0 ; xPos<width ; xPos++) */
+/* 		{ */
+/*       buffer[yPos * width + xPos] = 0; */
+/* 		} */
+/* 	} */
+/* 	return buffer; */
+/* } */
 
 void write_png_file(char* file_name, struct Image image)
 {

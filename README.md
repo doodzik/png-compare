@@ -3,6 +3,7 @@
 install [homebrew](https://brew.sh)
 ```
 brew install libpng
+brew install gcc --without-multilib
 ```
 
 compile programm
