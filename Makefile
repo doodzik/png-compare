@@ -20,7 +20,7 @@ all: *.c
 # 	$(CC) *.c $(DEFINE) -o $(TARGET) $(OPTIONS)
 
 run:
-	./$(TARGET) code1.png code2.png tes.png
+	./$(TARGET) dice_large.png dice_large1.png test.png
 
 clean:
 	rm -f $(TARGET)
