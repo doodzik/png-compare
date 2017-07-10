@@ -1,3 +1,20 @@
+/*
+    Zielstellung: Es sollen die RGB Werte von 2 Bildern verglichen werden. Auf der Konsole ausgegeben wird die Laufzeit und der prozentuale Unterschied der Bilder. Erstellt wird auch eine PNG Datei, die diesen Unterschied durch eine rosa Farbe visualisiert.
+ 
+    @author Frederik Dudzik,
+    @author Maik Müller, s0546807
+ */
+
+
+
+
+
+
+
+
+
+
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -167,19 +184,18 @@ void write_png_file(char* file_name, struct Image image)
 int process_file(struct Image image, struct Image image2, int startRowIndex, int endRowIndex, int startColumnIndex, int endColumnIndex)
 {
     double diff = 0;
-    double temp = 0;
-    int n = 100;
+    int n = 500;
     struct timeval start, end;
     
     
     
-    //  if (png_get_color_type(image.png_ptr, image.info_ptr) == PNG_COLOR_TYPE_RGB)
-    //   abort_("[process_file] input file is PNG_COLOR_TYPE_RGB but must be PNG_COLOR_TYPE_RGBA "
-    //          "(lacks the alpha channel)");
+    if (png_get_color_type(image.png_ptr, image.info_ptr) == PNG_COLOR_TYPE_RGB)
+        abort_("[process_file] input file is PNG_COLOR_TYPE_RGB but must be PNG_COLOR_TYPE_RGBA "
+               "(lacks the alpha channel)");
     
-    // if (png_get_color_type(image.png_ptr, image.info_ptr) != PNG_COLOR_TYPE_RGBA)
-    //        abort_("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
-    //               PNG_COLOR_TYPE_RGBA, png_get_color_type(image.png_ptr, image.info_ptr));
+    if (png_get_color_type(image.png_ptr, image.info_ptr) != PNG_COLOR_TYPE_RGBA)
+        abort_("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
+               PNG_COLOR_TYPE_RGBA, png_get_color_type(image.png_ptr, image.info_ptr));
     
     gettimeofday(&start, 0);
     
