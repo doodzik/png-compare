@@ -1,18 +1,11 @@
 /*
-    Zielstellung: Es sollen die RGB Werte von 2 Bildern verglichen werden. Auf der Konsole ausgegeben wird die Laufzeit und der prozentuale Unterschied der Bilder. Erstellt wird auch eine PNG Datei, die diesen Unterschied durch eine rosa Farbe visualisiert.
+    Goal: 2 RGBA pictures should be compared with the RGB values. The comparison should be parallelized with OpenMP.
+    
+    Result: Application which prints the running time of comparison and the percentage difference on console. It also creates an PNG file which visualised the difference with a pink color.
  
     @author Frederik Dudzik,
     @author Maik Müller, s0546807
  */
-
-
-
-
-
-
-
-
-
 
 
 #include <unistd.h>
@@ -47,6 +40,11 @@ struct Image {
     png_bytep * row_pointers;
 };
 
+/*  @brief reading image file
+ 
+    @param file_name
+    @param Image
+ */
 
 struct Image read_png_file(char* file_name)
 {
@@ -124,6 +122,13 @@ struct Image read_png_file(char* file_name)
 /* 	return buffer; */
 /* } */
 
+
+/*  @brief write PNG file
+ 
+    @param file_name
+    @param image
+ */
+
 void write_png_file(char* file_name, struct Image image)
 {
     /* create file */
@@ -181,6 +186,19 @@ void write_png_file(char* file_name, struct Image image)
 }
 
 
+/*  @brief comparison of RGB Data of 2 pictures
+ 
+    @param image
+    @param image2
+    @param startRowIndex
+    @param endRowIndex
+    @param startColumnIndex
+    @param endColumnIndex
+ 
+    @return difference between both pictures
+ */
+
+
 int process_file(struct Image image, struct Image image2, int startRowIndex, int endRowIndex, int startColumnIndex, int endColumnIndex)
 {
     double diff = 0;
@@ -188,14 +206,22 @@ int process_file(struct Image image, struct Image image2, int startRowIndex, int
     struct timeval start, end;
     
     
-    
-    if (png_get_color_type(image.png_ptr, image.info_ptr) == PNG_COLOR_TYPE_RGB)
+    /* check for RGBA */
+    if (png_get_color_type(image.png_ptr, image.info_ptr) == PNG_COLOR_TYPE_RGB || png_get_color_type(image2.png_ptr, image2.info_ptr) == PNG_COLOR_TYPE_RGB)
         abort_("[process_file] input file is PNG_COLOR_TYPE_RGB but must be PNG_COLOR_TYPE_RGBA "
                "(lacks the alpha channel)");
     
     if (png_get_color_type(image.png_ptr, image.info_ptr) != PNG_COLOR_TYPE_RGBA)
         abort_("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
                PNG_COLOR_TYPE_RGBA, png_get_color_type(image.png_ptr, image.info_ptr));
+    
+    /* check for resolution */
+    if (png_get_image_width(image.png_ptr, image.info_ptr) != png_get_image_width(image2.png_ptr, image2.info_ptr))
+        abort_("[process_file] input files have different resolutions");
+
+    if (png_get_image_height(image.png_ptr, image.info_ptr) != png_get_image_height(image2.png_ptr, image2.info_ptr))
+            abort_("[process_file] input files have different resolutions");
+    
     
     gettimeofday(&start, 0);
     
